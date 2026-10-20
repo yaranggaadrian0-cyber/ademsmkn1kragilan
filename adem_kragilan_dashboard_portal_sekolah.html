@@ -1,0 +1,1572 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0d9488">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="ADEM Kragilan">
+    <title>ADEM Kragilan - Portal & Galeri Kebersamaan SMKN 1 Kragilan</title>
+    
+    <!-- PWA Web App Manifest Placeholder -->
+    <link id="manifest-placeholder" rel="manifest">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Custom Font: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            700: '#0f766e',
+                            800: '#115e59',
+                            900: '#134e4a',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html, body {
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .pb-safe {
+            padding-bottom: env(safe-area-inset-bottom, 1rem);
+        }
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #printable-card-modal, #printable-card-modal * {
+                visibility: visible;
+            }
+            #printable-card-modal {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background: white;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 font-sans text-slate-800 antialiased min-h-screen flex flex-col justify-between selection:bg-teal-500 selection:text-white">
+
+    <!-- PWA INSTALL TOAST -->
+    <div id="pwa-toast" class="hidden fixed bottom-20 sm:bottom-6 left-4 right-4 sm:left-auto sm:right-6 sm:w-96 bg-slate-900 text-white p-4 rounded-2xl shadow-2xl z-50 flex items-center justify-between border border-slate-700 animate-bounce">
+        <div class="flex items-center gap-3">
+            <div class="p-2 bg-teal-600 rounded-xl">
+                <i data-lucide="download" class="w-5 h-5 text-white"></i>
+            </div>
+            <div>
+                <h4 class="text-xs font-bold">Pasang ADEM Kragilan</h4>
+                <p class="text-[11px] text-slate-300">Akses cepat dari layar HP / Desktop Anda</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-2">
+            <button onclick="installPWA()" class="px-3 py-1.5 bg-teal-500 hover:bg-teal-600 text-slate-900 font-bold text-xs rounded-lg transition">
+                Pasang
+            </button>
+            <button onclick="dismissPWA()" class="p-1 text-slate-400 hover:text-white">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN WRAPPER -->
+    <div id="app" class="min-h-screen flex flex-col md:flex-row">
+        
+        <!-- DESKTOP SIDEBAR -->
+        <aside id="desktop-sidebar" class="hidden md:flex flex-col w-64 bg-slate-900 text-slate-300 border-r border-slate-800 sticky top-0 h-screen flex-shrink-0 z-30">
+            <div class="p-5 border-b border-slate-800 flex items-center gap-3">
+                <div class="bg-gradient-to-tr from-teal-500 to-sky-500 text-white p-2.5 rounded-xl shadow-md">
+                    <i data-lucide="graduation-cap" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h1 class="text-base font-bold text-white leading-tight">ADEM Kragilan</h1>
+                    <p class="text-[10px] text-slate-400">SMKN 1 Kragilan</p>
+                </div>
+            </div>
+
+            <!-- Profile Widget -->
+            <div class="p-4 bg-slate-800/50 m-3 rounded-xl border border-slate-700/50 flex items-center gap-3">
+                <div id="sidebar-avatar" class="w-9 h-9 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold text-sm">
+                    U
+                </div>
+                <div class="overflow-hidden">
+                    <h4 id="sidebar-user-name" class="text-xs font-bold text-white truncate">User Name</h4>
+                    <span id="sidebar-user-role" class="text-[9px] bg-teal-500/20 text-teal-300 px-2 py-0.5 rounded-full font-semibold uppercase">Role</span>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="flex-1 p-3 space-y-1">
+                <button onclick="switchView('dashboard')" id="nav-item-dashboard" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-white bg-teal-600/30 border border-teal-500/30 transition">
+                    <i data-lucide="layout-dashboard" class="w-4 h-4 text-teal-400"></i>
+                    <span>Dashboard Utama</span>
+                </button>
+                <button onclick="switchView('galeri')" id="nav-item-galeri" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-800 transition">
+                    <i data-lucide="camera" class="w-4 h-4 text-teal-400"></i>
+                    <span>Galeri Kebersamaan</span>
+                </button>
+                <button onclick="switchView('pengumuman')" id="nav-item-pengumuman" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-800 transition">
+                    <i data-lucide="bell" class="w-4 h-4"></i>
+                    <span>Pengumuman & Info</span>
+                </button>
+                <button onclick="switchView('backup')" id="nav-item-backup" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-800 transition">
+                    <i data-lucide="database" class="w-4 h-4"></i>
+                    <span>Ekspor / Impor Data</span>
+                </button>
+            </nav>
+
+            <!-- Bottom Actions -->
+            <div class="p-4 border-t border-slate-800 space-y-2">
+                <div class="flex items-center justify-between text-[11px] text-slate-400 px-1 mb-2">
+                    <span>Platform:</span>
+                    <span id="platform-badge" class="font-mono text-teal-400 font-bold">Web/Browser</span>
+                </div>
+                <button onclick="logout()" class="w-full flex items-center justify-center gap-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 py-2 rounded-xl text-xs font-semibold transition">
+                    <i data-lucide="log-out" class="w-4 h-4"></i>
+                    <span>Keluar Akun</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- MOBILE TOP HEADER -->
+        <header id="mobile-header" class="hidden md:hidden bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-30 px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-2.5">
+                <div class="bg-teal-600 text-white p-1.5 rounded-lg">
+                    <i data-lucide="graduation-cap" class="w-5 h-5"></i>
+                </div>
+                <span class="text-sm font-bold bg-gradient-to-r from-teal-300 to-sky-300 bg-clip-text text-transparent">ADEM Kragilan</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <span id="mobile-user-badge" class="text-[10px] bg-teal-900/80 text-teal-300 border border-teal-700/50 px-2 py-0.5 rounded-full font-medium truncate max-w-[100px]">User</span>
+                <button onclick="logout()" class="p-1.5 bg-rose-500/20 text-rose-300 rounded-lg">
+                    <i data-lucide="log-out" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- MAIN CONTAINER -->
+        <main class="flex-1 min-w-0 pb-20 md:pb-6">
+            
+            <!-- 1. LOGIN VIEW -->
+            <section id="login-section" class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-900 via-teal-950 to-slate-900 relative overflow-hidden">
+                <div class="absolute -top-24 -left-24 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl"></div>
+                <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-sky-500/10 rounded-full blur-3xl"></div>
+
+                <div class="w-full max-w-md bg-white/95 backdrop-blur-md rounded-3xl shadow-2xl p-6 sm:p-8 border border-white/20 relative z-10">
+                    <div class="text-center mb-6">
+                        <div class="inline-flex bg-gradient-to-tr from-teal-600 to-sky-600 text-white p-3.5 rounded-2xl shadow-lg mb-3">
+                            <i data-lucide="graduation-cap" class="w-8 h-8"></i>
+                        </div>
+                        <h1 class="text-2xl font-bold text-slate-800">ADEM SMKN 1 Kragilan</h1>
+                        <p class="text-xs text-slate-500 mt-1">Portal Afirmasi Pendidikan Menengah Multiplatform</p>
+                    </div>
+
+                    <div class="bg-slate-100 p-1 rounded-2xl flex mb-6 relative">
+                        <button id="tab-siswa-btn" onclick="switchLoginTab('siswa')" class="flex-1 py-2 text-xs sm:text-sm font-semibold rounded-xl transition-all duration-200 flex items-center justify-center gap-2 bg-white text-teal-700 shadow-sm">
+                            <i data-lucide="user" class="w-4 h-4"></i> Siswa
+                        </button>
+                        <button id="tab-admin-btn" onclick="switchLoginTab('admin')" class="flex-1 py-2 text-xs sm:text-sm font-semibold rounded-xl transition-all duration-200 flex items-center justify-center gap-2 text-slate-500 hover:text-slate-800">
+                            <i data-lucide="shield-check" class="w-4 h-4"></i> Admin Sekolah
+                        </button>
+                    </div>
+
+                    <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
+                        <input type="hidden" id="login-role" value="siswa">
+                        
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Username / NISN</label>
+                            <div class="relative">
+                                <i data-lucide="user" class="w-4 h-4 absolute left-3.5 top-3.5 text-slate-400"></i>
+                                <input type="text" id="login-username" required class="w-full pl-10 pr-3 py-3 text-xs sm:text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500/30 focus:border-teal-500" placeholder="Masukkan username atau NISN">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-600 mb-1">Password</label>
+                            <div class="relative">
+                                <i data-lucide="lock" class="w-4 h-4 absolute left-3.5 top-3.5 text-slate-400"></i>
+                                <input type="password" id="login-password" required class="w-full pl-10 pr-3 py-3 text-xs sm:text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500/30 focus:border-teal-500" placeholder="Masukkan password">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-teal-600 to-sky-600 hover:from-teal-700 hover:to-sky-700 text-white font-semibold rounded-xl text-sm shadow-md hover:shadow-lg transition duration-200 flex items-center justify-center gap-2 active:scale-95">
+                            <span>Masuk ke Dashboard</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </button>
+                    </form>
+
+                    <div class="mt-6 pt-4 border-t border-slate-100 bg-slate-50/80 p-3 rounded-2xl text-center">
+                        <p class="text-[11px] font-semibold text-slate-700 mb-1">💡 Uji Coba Multiplatform / Akses Bebas:</p>
+                        <p class="text-[10px] text-slate-500 leading-relaxed">
+                            <b>Siswa:</b> <code class="bg-white px-1.5 py-0.5 rounded text-teal-700 border">siswa</code> / <code class="bg-white px-1.5 py-0.5 rounded text-teal-700 border">12345</code><br>
+                            <b>Admin:</b> <code class="bg-white px-1.5 py-0.5 rounded text-teal-700 border">admin</code> / <code class="bg-white px-1.5 py-0.5 rounded text-teal-700 border">admin123</code>
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. DASHBOARD VIEW -->
+            <div id="view-dashboard-container" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+                <!-- SISWA DASHBOARD -->
+                <div id="siswa-dashboard" class="hidden space-y-6">
+                    <div class="bg-gradient-to-r from-teal-700 via-teal-800 to-slate-800 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
+                        <div class="relative z-10">
+                            <span class="bg-teal-500/30 border border-teal-400/30 text-teal-100 text-[11px] px-3 py-1 rounded-full font-medium inline-block mb-2">Penerima Beasiswa ADEM SMKN 1 Kragilan</span>
+                            <h2 class="text-xl sm:text-2xl font-bold">Selamat Datang, <span id="siswa-welcome-name">Siswa</span>!</h2>
+                            <p class="text-xs sm:text-sm text-teal-100/90 mt-1 max-w-2xl">Akses biodata, cetak kartu pelajar, dan bagikan momen di Galeri Kebersamaan dari HP atau PC Anda.</p>
+                        </div>
+                        <i data-lucide="award" class="absolute right-4 -bottom-4 w-40 h-40 text-white/5 pointer-events-none"></i>
+                    </div>
+
+                    <!-- BIODATA CARD -->
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6">
+                        <div class="flex flex-wrap items-center justify-between pb-4 mb-5 border-b border-slate-100 gap-2">
+                            <div class="flex items-center gap-2">
+                                <i data-lucide="id-card" class="w-5 h-5 text-teal-600"></i>
+                                <h3 class="font-bold text-slate-800 text-base sm:text-lg">Biodata Diri Siswa ADEM</h3>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button onclick="openPrintCardModal()" class="flex items-center gap-1.5 text-xs font-semibold text-sky-700 hover:text-sky-800 bg-sky-50 hover:bg-sky-100 px-3 py-2 rounded-xl transition duration-200 active:scale-95">
+                                    <i data-lucide="printer" class="w-3.5 h-3.5"></i> Cetak Kartu Pelajar
+                                </button>
+                                <button id="btn-edit-biodata" onclick="toggleEditBiodata(true)" class="flex items-center gap-1.5 text-xs font-semibold text-teal-600 hover:text-teal-700 bg-teal-50 hover:bg-teal-100 px-3 py-2 rounded-xl transition duration-200 active:scale-95">
+                                    <i data-lucide="edit-3" class="w-3.5 h-3.5"></i> Edit Biodata
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- DISPLAY BIODATA -->
+                        <div id="biodata-view" class="space-y-6">
+                            <div class="flex flex-col sm:flex-row items-center sm:items-start gap-5 bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                                <img id="view-foto" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=256" alt="Profile" class="w-24 h-28 sm:w-28 sm:h-32 object-cover rounded-2xl shadow-md border-2 border-white">
+                                <div class="text-center sm:text-left space-y-1">
+                                    <span class="inline-block px-2.5 py-0.5 bg-emerald-100 text-emerald-800 text-[11px] font-semibold rounded-full mb-1">
+                                        Status: Aktif ADEM SMKN 1 Kragilan
+                                    </span>
+                                    <h4 id="view-nama" class="text-lg font-bold text-slate-800">Nama Siswa</h4>
+                                    <p class="text-xs text-slate-500 font-mono">NISN: <span id="view-nisn" class="font-semibold text-slate-700">1234567890</span></p>
+                                    <p class="text-xs text-slate-600 font-medium">
+                                        <i data-lucide="book-open" class="w-3.5 h-3.5 inline mr-1 text-teal-600"></i>
+                                        <span id="view-jurusan">Teknik Komputer dan Jaringan (TKJ)</span>
+                                    </p>
+                                    <p class="text-xs text-slate-500">
+                                        <i data-lucide="map-pin" class="w-3.5 h-3.5 inline mr-1 text-teal-600"></i>
+                                        Asal Daerah: <span id="view-asal" class="font-medium text-slate-700">Papua / Daerah 3T</span>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5 text-xs sm:text-sm">
+                                <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100">
+                                    <span class="text-slate-400 text-xs font-medium block">Tempat, Tanggal Lahir</span>
+                                    <span id="view-ttl" class="font-semibold text-slate-700 mt-0.5 block">Jayapura, 12 Mei 2007</span>
+                                </div>
+                                <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100">
+                                    <span class="text-slate-400 text-xs font-medium block">Jenis Kelamin</span>
+                                    <span id="view-jk" class="font-semibold text-slate-700 mt-0.5 block">Laki-laki</span>
+                                </div>
+                                <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100">
+                                    <span class="text-slate-400 text-xs font-medium block">Agama</span>
+                                    <span id="view-agama" class="font-semibold text-slate-700 mt-0.5 block">Kristen Protestan</span>
+                                </div>
+                                <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100">
+                                    <span class="text-slate-400 text-xs font-medium block">No. Telepon/WhatsApp</span>
+                                    <span id="view-hp" class="font-semibold text-slate-700 mt-0.5 block">081234567890</span>
+                                </div>
+                                <div class="md:col-span-2 p-3.5 bg-slate-50 rounded-xl border border-slate-100">
+                                    <span class="text-slate-400 text-xs font-medium block">Alamat Tinggal di Kragilan</span>
+                                    <span id="view-alamat" class="font-semibold text-slate-700 mt-0.5 block">Asrama/Kossan ADEM, Kec. Kragilan, Kab. Serang, Banten</span>
+                                </div>
+                            </div>
+
+                            <div class="pt-2">
+                                <h5 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Data Orang Tua / Wali</h5>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5 text-xs sm:text-sm">
+                                    <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100">
+                                        <span class="text-slate-400 text-xs font-medium block">Nama Ortu/Wali</span>
+                                        <span id="view-ortu" class="font-semibold text-slate-700 mt-0.5 block">Yohanes W.</span>
+                                    </div>
+                                    <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100">
+                                        <span class="text-slate-400 text-xs font-medium block">No. Kontak Ortu</span>
+                                        <span id="view-ortu-hp" class="font-semibold text-slate-700 mt-0.5 block">082199887766</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- EDIT FORM -->
+                        <form id="biodata-edit-form" onsubmit="saveBiodata(event)" class="hidden space-y-4">
+                            <div class="p-3 bg-amber-50 border border-amber-200 text-amber-800 text-xs rounded-xl flex items-center gap-2">
+                                <i data-lucide="info" class="w-4 h-4 flex-shrink-0"></i>
+                                <span>Perubahan biodata tersimpan aman di penyimpanan perangkat ini.</span>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Lengkap</label>
+                                    <input type="text" id="edit-nama" required class="w-full p-3 text-xs sm:text-sm border rounded-xl">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">NISN</label>
+                                    <input type="text" id="edit-nisn" required class="w-full p-3 text-xs sm:text-sm border rounded-xl">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Jurusan SMKN 1 Kragilan</label>
+                                    <select id="edit-jurusan" class="w-full p-3 text-xs sm:text-sm border rounded-xl">
+                                        <option value="Rekayasa Perangkat Lunak (RPL)">Rekayasa Perangkat Lunak (RPL)</option>
+                                        <option value="Teknik Komputer dan Jaringan (TKJ)">Teknik Komputer dan Jaringan (TKJ)</option>
+                                        <option value="Teknik Kendaraan Ringan (TKR)">Teknik Kendaraan Ringan (TKR)</option>
+                                        <option value="Teknik Pemeliharaan Mekanik Industri (TPMI)">Teknik Pemeliharaan Mekanik Industri (TPMI)</option>
+                                        <option value="Otomatisasi & Tata Kelola Perkantoran (OTKP)">Otomatisasi & Tata Kelola Perkantoran (OTKP)</option>
+                                        <option value="Akuntansi dan Keuangan Lembaga (AKL)">Akuntansi dan Keuangan Lembaga (AKL)</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Tempat, Tanggal Lahir</label>
+                                    <input type="text" id="edit-ttl" required class="w-full p-3 text-xs sm:text-sm border rounded-xl">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Jenis Kelamin</label>
+                                    <select id="edit-jk" class="w-full p-3 text-xs sm:text-sm border rounded-xl">
+                                        <option value="Laki-laki">Laki-laki</option>
+                                        <option value="Perempuan">Perempuan</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Agama</label>
+                                    <input type="text" id="edit-agama" required class="w-full p-3 text-xs sm:text-sm border rounded-xl">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Daerah Asal</label>
+                                    <input type="text" id="edit-asal" required class="w-full p-3 text-xs sm:text-sm border rounded-xl">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">No. HP / WhatsApp Siswa</label>
+                                    <input type="text" id="edit-hp" required class="w-full p-3 text-xs sm:text-sm border rounded-xl">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Foto Profil (Upload File atau masukkan URL)</label>
+                                    <div class="flex gap-2">
+                                        <input type="file" id="edit-foto-file" accept="image/*" onchange="convertProfileFotoFile(event)" class="w-1/2 p-2 text-xs border rounded-xl">
+                                        <input type="url" id="edit-foto" placeholder="Atau paste URL Foto..." class="w-1/2 p-3 text-xs border rounded-xl">
+                                    </div>
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Alamat Sekarang di Kragilan</label>
+                                    <textarea id="edit-alamat" rows="2" class="w-full p-3 text-xs sm:text-sm border rounded-xl"></textarea>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Orang Tua / Wali</label>
+                                    <input type="text" id="edit-ortu" required class="w-full p-3 text-xs sm:text-sm border rounded-xl">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-600 mb-1">No. Kontak Ortu</label>
+                                    <input type="text" id="edit-ortu-hp" required class="w-full p-3 text-xs sm:text-sm border rounded-xl">
+                                </div>
+                            </div>
+
+                            <div class="flex justify-end gap-2 pt-4">
+                                <button type="button" onclick="toggleEditBiodata(false)" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-xs">
+                                    Batal
+                                </button>
+                                <button type="submit" class="px-4 py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-semibold rounded-xl text-xs shadow-md">
+                                    Simpan Perubahan
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- ADMIN DASHBOARD -->
+                <div id="admin-dashboard" class="hidden space-y-6">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                            <h2 class="text-xl sm:text-2xl font-bold text-slate-800">Kelola Siswa ADEM SMKN 1 Kragilan</h2>
+                            <p class="text-xs sm:text-sm text-slate-500">Panel Manajemen Afirmasi Multiplatform</p>
+                        </div>
+                        <button onclick="openModalAddSiswa()" class="inline-flex items-center justify-center gap-2 bg-teal-600 hover:bg-teal-700 text-white font-semibold px-4 py-3 rounded-xl text-xs sm:text-sm shadow-md transition active:scale-95">
+                            <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                            <span>Tambah Siswa ADEM</span>
+                        </button>
+                    </div>
+
+                    <!-- Stats Row -->
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3.5">
+                        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3">
+                            <div class="p-3 bg-teal-50 text-teal-600 rounded-xl">
+                                <i data-lucide="users" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <span class="text-[11px] text-slate-400 font-medium">Total Siswa</span>
+                                <h4 id="stat-total" class="text-base sm:text-lg font-bold text-slate-800">0</h4>
+                            </div>
+                        </div>
+                        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3">
+                            <div class="p-3 bg-sky-50 text-sky-600 rounded-xl">
+                                <i data-lucide="laptop" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <span class="text-[11px] text-slate-400 font-medium">Siswa Teknik</span>
+                                <h4 id="stat-teknik" class="text-base sm:text-lg font-bold text-slate-800">0</h4>
+                            </div>
+                        </div>
+                        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3">
+                            <div class="p-3 bg-emerald-50 text-emerald-600 rounded-xl">
+                                <i data-lucide="check-circle" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <span class="text-[11px] text-slate-400 font-medium">Status Beasiswa</span>
+                                <h4 class="text-base sm:text-lg font-bold text-emerald-600">Aktif</h4>
+                            </div>
+                        </div>
+                        <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-3">
+                            <div class="p-3 bg-purple-50 text-purple-600 rounded-xl">
+                                <i data-lucide="camera" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <span class="text-[11px] text-slate-400 font-medium">Total Momen</span>
+                                <h4 id="stat-foto" class="text-base sm:text-lg font-bold text-purple-600">0</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Admin Table -->
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                        <div class="p-4 border-b border-slate-100 flex flex-col sm:flex-row gap-3 justify-between items-center">
+                            <div class="relative w-full sm:w-72">
+                                <i data-lucide="search" class="w-4 h-4 absolute left-3 top-3 text-slate-400"></i>
+                                <input type="text" id="search-input" oninput="renderAdminTable()" placeholder="Cari nama/NISN..." class="w-full pl-9 pr-3 py-2 text-xs sm:text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none">
+                            </div>
+                            <select id="filter-jurusan" onchange="renderAdminTable()" class="w-full sm:w-auto text-xs py-2 px-3 border border-slate-200 rounded-xl bg-slate-50">
+                                <option value="">Semua Jurusan</option>
+                                <option value="RPL">RPL</option>
+                                <option value="TKJ">TKJ</option>
+                                <option value="TKR">TKR</option>
+                                <option value="TPMI">TPMI</option>
+                                <option value="OTKP">OTKP</option>
+                                <option value="AKL">AKL</option>
+                            </select>
+                        </div>
+
+                        <div class="overflow-x-auto custom-scrollbar">
+                            <table class="w-full text-left border-collapse text-xs sm:text-sm">
+                                <thead>
+                                    <tr class="bg-slate-50 border-b border-slate-100 text-slate-500 uppercase text-[10px] font-semibold tracking-wider">
+                                        <th class="py-3 px-4">Siswa</th>
+                                        <th class="py-3 px-4">NISN</th>
+                                        <th class="py-3 px-4">Jurusan</th>
+                                        <th class="py-3 px-4">Asal</th>
+                                        <th class="py-3 px-4">Kontak</th>
+                                        <th class="py-3 px-4 text-center">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-siswa-table-body" class="divide-y divide-slate-100 text-slate-700">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. GALERI FOTO KEBERSAMAAN VIEW -->
+            <div id="view-galeri-container" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gradient-to-r from-teal-800 to-slate-900 p-6 rounded-2xl text-white shadow-md">
+                    <div>
+                        <span class="bg-teal-500/30 text-teal-200 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase border border-teal-400/30">Momen ADEM</span>
+                        <h2 class="text-xl sm:text-2xl font-bold mt-1">Galeri Kebersamaan Siswa</h2>
+                        <p class="text-xs text-slate-300 mt-1">Dokumentasi kegiatan belajar, kebersamaan asrama, dan keakraban siswa ADEM SMKN 1 Kragilan.</p>
+                    </div>
+                    <button onclick="openUploadFotoModal()" class="inline-flex items-center justify-center gap-2 bg-teal-500 hover:bg-teal-600 text-slate-950 font-bold px-4 py-3 rounded-xl text-xs sm:text-sm shadow-md transition active:scale-95 flex-shrink-0">
+                        <i data-lucide="upload" class="w-4 h-4"></i>
+                        <span>Unggah Foto Momen</span>
+                    </button>
+                </div>
+
+                <!-- FILTER & SEARCH BAR GALERI -->
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row items-center justify-between gap-3">
+                    <!-- Category Tabs -->
+                    <div class="flex items-center gap-1.5 overflow-x-auto w-full md:w-auto pb-1 md:pb-0 custom-scrollbar text-xs">
+                        <button onclick="filterGaleri('Semua')" id="cat-btn-Semua" class="px-3 py-1.5 rounded-xl font-bold transition bg-teal-600 text-white">Semua</button>
+                        <button onclick="filterGaleri('Kegiatan Belajar')" id="cat-btn-Kegiatan Belajar" class="px-3 py-1.5 rounded-xl font-medium transition bg-slate-100 text-slate-600 hover:bg-slate-200">Belajar</button>
+                        <button onclick="filterGaleri('Kebersamaan Asrama')" id="cat-btn-Kebersamaan Asrama" class="px-3 py-1.5 rounded-xl font-medium transition bg-slate-100 text-slate-600 hover:bg-slate-200">Asrama</button>
+                        <button onclick="filterGaleri('Acara ADEM')" id="cat-btn-Acara ADEM" class="px-3 py-1.5 rounded-xl font-medium transition bg-slate-100 text-slate-600 hover:bg-slate-200">Acara</button>
+                        <button onclick="filterGaleri('Ekstrakurikuler')" id="cat-btn-Ekstrakurikuler" class="px-3 py-1.5 rounded-xl font-medium transition bg-slate-100 text-slate-600 hover:bg-slate-200">Ekskul</button>
+                    </div>
+
+                    <!-- Search Bar -->
+                    <div class="relative w-full md:w-64">
+                        <i data-lucide="search" class="w-4 h-4 absolute left-3 top-2.5 text-slate-400"></i>
+                        <input type="text" id="search-foto-input" oninput="renderGaleriGrid()" placeholder="Cari foto momen..." class="w-full pl-9 pr-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none">
+                    </div>
+                </div>
+
+                <!-- GALERI GRID -->
+                <div id="galeri-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                    <!-- Dynamic Photos will be rendered here -->
+                </div>
+            </div>
+
+            <!-- 4. PENGUMUMAN VIEW -->
+            <div id="view-pengumuman-container" class="hidden max-w-5xl mx-auto px-4 py-6 space-y-4">
+                <h2 class="text-xl font-bold text-slate-800 mb-4">Pengumuman & Informasi Terbaru</h2>
+                <div class="space-y-4">
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+                        <span class="text-[10px] bg-teal-100 text-teal-800 font-bold px-2.5 py-1 rounded-full">AKADEMIK</span>
+                        <h3 class="text-base font-bold text-slate-800">Verifikasi Ulang Penerima Beasiswa ADEM Semester Genap</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">Seluruh siswa penerima beasiswa ADEM diharapkan melakukan konfirmasi buku rekening dan kartu pelajar di ruang BK SMKN 1 Kragilan.</p>
+                        <span class="text-[10px] text-slate-400 block pt-2">Diperbarui: Hari ini</span>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-2">
+                        <span class="text-[10px] bg-sky-100 text-sky-800 font-bold px-2.5 py-1 rounded-full">KEGIATAN</span>
+                        <h3 class="text-base font-bold text-slate-800">Sesi Pendampingan & Orientasi Budaya</h3>
+                        <p class="text-xs text-slate-600 leading-relaxed">Kegiatan kebersamaan bulanan antara siswa daerah asal 3T/Papua dengan pembina sekolah akan diselenggarakan hari Jumat jam 14.00 WIB.</p>
+                        <span class="text-[10px] text-slate-400 block pt-2">Diperbarui: Kemarin</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. EKSPOR / IMPOR BACKUP VIEW -->
+            <div id="view-backup-container" class="hidden max-w-3xl mx-auto px-4 py-6 space-y-6">
+                <div>
+                    <h2 class="text-xl font-bold text-slate-800">Ekspor & Impor Data (Sync Multiplatform)</h2>
+                    <p class="text-xs text-slate-500">Pindahkan data siswa ADEM & galeri foto antar perangkat (HP Android, iPhone, Laptop Windows/Mac) secara instan menggunakan file JSON.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                        <div class="p-3 bg-teal-50 text-teal-600 rounded-xl w-fit">
+                            <i data-lucide="download-cloud" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-sm">Ekspor Backup Data</h3>
+                        <p class="text-xs text-slate-500">Unduh seluruh data siswa & galeri foto dalam bentuk file JSON.</p>
+                        <button onclick="exportDataJSON()" class="w-full py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-semibold text-xs rounded-xl transition flex items-center justify-center gap-2">
+                            <i data-lucide="file-spread-sheet" class="w-4 h-4"></i> Unduh File Backup (.json)
+                        </button>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3">
+                        <div class="p-3 bg-sky-50 text-sky-600 rounded-xl w-fit">
+                            <i data-lucide="upload-cloud" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-sm">Impor Data dari HP/PC Lain</h3>
+                        <p class="text-xs text-slate-500">Unggah file JSON backup untuk memulihkan data ke browser perangkat ini.</p>
+                        <input type="file" id="import-json-file" accept=".json" class="hidden" onchange="importDataJSON(event)">
+                        <button onclick="document.getElementById('import-json-file').click()" class="w-full py-2.5 bg-slate-800 hover:bg-slate-900 text-white font-semibold text-xs rounded-xl transition flex items-center justify-center gap-2">
+                            <i data-lucide="upload" class="w-4 h-4"></i> Pilih File Backup (.json)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- MOBILE BOTTOM NAVIGATION -->
+        <nav id="mobile-bottom-nav" class="hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-3 py-2 z-40 flex justify-around items-center pb-safe">
+            <button onclick="switchView('dashboard')" id="m-nav-dashboard" class="flex flex-col items-center gap-1 text-teal-600 font-bold">
+                <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+                <span class="text-[10px]">Dashboard</span>
+            </button>
+            <button onclick="switchView('galeri')" id="m-nav-galeri" class="flex flex-col items-center gap-1 text-slate-400">
+                <i data-lucide="camera" class="w-5 h-5"></i>
+                <span class="text-[10px]">Galeri</span>
+            </button>
+            <button onclick="switchView('pengumuman')" id="m-nav-pengumuman" class="flex flex-col items-center gap-1 text-slate-400">
+                <i data-lucide="bell" class="w-5 h-5"></i>
+                <span class="text-[10px]">Info</span>
+            </button>
+            <button onclick="switchView('backup')" id="m-nav-backup" class="flex flex-col items-center gap-1 text-slate-400">
+                <i data-lucide="database" class="w-5 h-5"></i>
+                <span class="text-[10px]">Sync</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- MODAL 1: UPLOAD FOTO KEBERSAMAAN -->
+    <div id="modal-upload-foto" class="hidden fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <div class="flex justify-between items-center pb-3 border-b border-slate-100">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="camera" class="w-5 h-5 text-teal-600"></i>
+                    <h3 class="font-bold text-slate-800 text-base">Unggah Foto Momen Kebersamaan</h3>
+                </div>
+                <button onclick="closeUploadFotoModal()" class="text-slate-400 hover:text-slate-600 p-1">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <form id="upload-foto-form" onsubmit="handleSaveFoto(event)" class="space-y-4 mt-4 text-xs sm:text-sm">
+                <div>
+                    <label class="block font-semibold text-slate-600 mb-1">Judul / Nama Momen Foto</label>
+                    <input type="text" id="foto-judul" required placeholder="Misal: Belajar Kelompok di Perpustakaan" class="w-full p-2.5 border rounded-xl focus:ring-2 focus:ring-teal-500/20">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-semibold text-slate-600 mb-1">Kategori Kegiatan</label>
+                        <select id="foto-kategori" class="w-full p-2.5 border rounded-xl">
+                            <option value="Kegiatan Belajar">Kegiatan Belajar</option>
+                            <option value="Kebersamaan Asrama">Kebersamaan Asrama</option>
+                            <option value="Acara ADEM">Acara ADEM</option>
+                            <option value="Ekstrakurikuler">Ekstrakurikuler</option>
+                            <option value="Lainnya">Lainnya</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-600 mb-1">Tanggal Momen</label>
+                        <input type="date" id="foto-tanggal" required class="w-full p-2.5 border rounded-xl">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-semibold text-slate-600 mb-1">Pilih File Foto (Otomatis Simpan di HP/Browser)</label>
+                    <input type="file" id="foto-file-input" accept="image/*" onchange="previewUploadFoto(event)" class="w-full p-2 border rounded-xl text-xs bg-slate-50">
+                </div>
+
+                <div>
+                    <label class="block font-semibold text-slate-600 mb-1">Atau Gunakan Link / URL Foto</label>
+                    <input type="url" id="foto-url-input" oninput="previewUploadFotoUrl()" placeholder="https://..." class="w-full p-2.5 border rounded-xl">
+                </div>
+
+                <!-- Preview Box -->
+                <div id="foto-preview-box" class="hidden relative rounded-2xl overflow-hidden border border-slate-200 h-48 bg-slate-100 flex items-center justify-center">
+                    <img id="foto-preview-img" src="" class="w-full h-full object-cover">
+                </div>
+
+                <div>
+                    <label class="block font-semibold text-slate-600 mb-1">Keterangan / Cerita Momen</label>
+                    <textarea id="foto-keterangan" rows="2" placeholder="Tuliskan cerita singkat dibalik foto kebersamaan ini..." class="w-full p-2.5 border rounded-xl"></textarea>
+                </div>
+
+                <div class="pt-2 flex justify-end gap-2">
+                    <button type="button" onclick="closeUploadFotoModal()" class="px-4 py-2 bg-slate-100 text-slate-700 font-semibold rounded-xl">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-teal-600 text-white font-semibold rounded-xl shadow">Simpan Foto</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 2: LIGHTBOX FOTO FULLSCREEN -->
+    <div id="modal-lightbox" class="hidden fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-2 sm:p-6">
+        <div class="relative bg-slate-900 text-white rounded-3xl max-w-4xl w-full overflow-hidden shadow-2xl flex flex-col md:flex-row max-h-[95vh]">
+            <button onclick="closeLightbox()" class="absolute top-4 right-4 z-10 bg-slate-800/80 hover:bg-slate-700 text-white p-2 rounded-full backdrop-blur-sm">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <div class="md:w-2/3 bg-black flex items-center justify-center p-2 min-h-[300px]">
+                <img id="lightbox-img" src="" class="max-h-[75vh] w-auto object-contain rounded-xl">
+            </div>
+
+            <div class="md:w-1/3 p-6 flex flex-col justify-between space-y-4 bg-slate-900 border-t md:border-t-0 md:border-l border-slate-800">
+                <div class="space-y-3">
+                    <span id="lightbox-kategori" class="px-2.5 py-0.5 bg-teal-500/20 text-teal-300 text-[10px] font-bold rounded-full uppercase border border-teal-500/30">Kategori</span>
+                    <h3 id="lightbox-judul" class="text-lg font-bold text-white">Judul Foto</h3>
+                    <p id="lightbox-keterangan" class="text-xs text-slate-300 leading-relaxed">Keterangan foto akan berada di sini...</p>
+                    
+                    <div class="pt-3 border-t border-slate-800 space-y-1.5 text-xs text-slate-400">
+                        <p><i data-lucide="user" class="w-3.5 h-3.5 inline mr-1 text-teal-400"></i> Pengunggah: <span id="lightbox-pengunggah" class="text-slate-200 font-semibold">Nama</span></p>
+                        <p><i data-lucide="calendar" class="w-3.5 h-3.5 inline mr-1 text-teal-400"></i> Tanggal: <span id="lightbox-tanggal" class="text-slate-200">12 Okt 2026</span></p>
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-slate-800 flex items-center justify-between">
+                    <button id="lightbox-like-btn" onclick="toggleLikeFoto()" class="flex items-center gap-2 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-rose-400 rounded-xl text-xs font-bold transition">
+                        <i data-lucide="heart" class="w-4 h-4 fill-rose-500"></i>
+                        <span id="lightbox-likes-count">0</span> Suka
+                    </button>
+                    <button id="lightbox-delete-btn" onclick="deleteCurrentFoto()" class="flex items-center gap-1.5 text-rose-400 hover:text-rose-300 text-xs font-semibold px-3 py-2 rounded-xl bg-rose-500/10">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i> Hapus
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: PRINTABLE KARTU PELAJAR ADEM -->
+    <div id="printable-card-modal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4">
+            <div class="flex justify-between items-center pb-2 border-b border-slate-100 no-print">
+                <h3 class="font-bold text-slate-800 text-sm">Pratinjau Kartu Pelajar ADEM</h3>
+                <button onclick="closePrintCardModal()" class="text-slate-400 hover:text-slate-600">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- ID CARD DESIGN -->
+            <div id="id-card-content" class="w-full bg-gradient-to-br from-slate-900 via-teal-900 to-slate-900 text-white rounded-2xl p-5 shadow-xl border border-teal-500/30 relative overflow-hidden">
+                <div class="flex justify-between items-center pb-3 border-b border-teal-500/30">
+                    <div>
+                        <h4 class="font-bold text-xs uppercase tracking-wider text-teal-300">SMKN 1 Kragilan</h4>
+                        <p class="text-[9px] text-slate-300">KARTU TANDA SISWA BEASISWA ADEM</p>
+                    </div>
+                    <div class="bg-teal-500 text-slate-950 p-1.5 rounded-lg">
+                        <i data-lucide="graduation-cap" class="w-5 h-5"></i>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-4 my-4">
+                    <img id="card-foto" src="" class="w-20 h-24 object-cover rounded-xl border-2 border-teal-400 shadow-md">
+                    <div class="space-y-1 text-xs">
+                        <h3 id="card-nama" class="font-bold text-white text-sm">Nama Siswa</h3>
+                        <p class="text-[11px] text-teal-200 font-mono">NISN: <span id="card-nisn">00000000</span></p>
+                        <p id="card-jurusan" class="text-[10px] text-slate-300 font-medium">Teknik Komputer & Jaringan</p>
+                        <p class="text-[10px] text-slate-400">Asal: <span id="card-asal">Papua</span></p>
+                    </div>
+                </div>
+
+                <div class="pt-2 border-t border-teal-500/30 flex justify-between items-center text-[9px] text-teal-300 font-mono">
+                    <span>PERIODE: 2026/2027</span>
+                    <span>BEASISWA AFIRMASI</span>
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-2 no-print">
+                <button onclick="closePrintCardModal()" class="px-4 py-2 bg-slate-100 text-slate-700 font-semibold rounded-xl text-xs">Tutup</button>
+                <button onclick="window.print()" class="px-4 py-2 bg-teal-600 text-white font-semibold rounded-xl text-xs flex items-center gap-1">
+                    <i data-lucide="printer" class="w-4 h-4"></i> Cetak Kartu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 4: ADD/EDIT SISWA FOR ADMIN -->
+    <div id="modal-siswa" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <div class="flex justify-between items-center pb-3 border-b border-slate-100">
+                <h3 id="modal-title" class="font-bold text-slate-800 text-base">Tambah Siswa ADEM</h3>
+                <button onclick="closeModalSiswa()" class="text-slate-400 hover:text-slate-600 p-1">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <form id="admin-siswa-form" onsubmit="saveAdminSiswa(event)" class="space-y-3.5 mt-4 text-xs sm:text-sm">
+                <input type="hidden" id="admin-edit-id" value="">
+
+                <div>
+                    <label class="block font-semibold text-slate-600 mb-1">Nama Lengkap Siswa</label>
+                    <input type="text" id="admin-form-nama" required class="w-full p-2.5 border rounded-xl">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-semibold text-slate-600 mb-1">NISN</label>
+                        <input type="text" id="admin-form-nisn" required class="w-full p-2.5 border rounded-xl">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-600 mb-1">Jenis Kelamin</label>
+                        <select id="admin-form-jk" class="w-full p-2.5 border rounded-xl">
+                            <option value="Laki-laki">Laki-laki</option>
+                            <option value="Perempuan">Perempuan</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-semibold text-slate-600 mb-1">Jurusan SMKN 1 Kragilan</label>
+                    <select id="admin-form-jurusan" class="w-full p-2.5 border rounded-xl">
+                        <option value="Rekayasa Perangkat Lunak (RPL)">Rekayasa Perangkat Lunak (RPL)</option>
+                        <option value="Teknik Komputer dan Jaringan (TKJ)">Teknik Komputer dan Jaringan (TKJ)</option>
+                        <option value="Teknik Kendaraan Ringan (TKR)">Teknik Kendaraan Ringan (TKR)</option>
+                        <option value="Teknik Pemeliharaan Mekanik Industri (TPMI)">Teknik Pemeliharaan Mekanik Industri (TPMI)</option>
+                        <option value="Otomatisasi & Tata Kelola Perkantoran (OTKP)">Otomatisasi & Tata Kelola Perkantoran (OTKP)</option>
+                        <option value="Akuntansi dan Keuangan Lembaga (AKL)">Akuntansi dan Keuangan Lembaga (AKL)</option>
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-semibold text-slate-600 mb-1">Tempat, Tgl Lahir</label>
+                        <input type="text" id="admin-form-ttl" required class="w-full p-2.5 border rounded-xl">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-600 mb-1">Daerah Asal</label>
+                        <input type="text" id="admin-form-asal" required class="w-full p-2.5 border rounded-xl">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-semibold text-slate-600 mb-1">No. HP Siswa</label>
+                    <input type="text" id="admin-form-hp" required class="w-full p-2.5 border rounded-xl">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-semibold text-slate-600 mb-1">Nama Ortu</label>
+                        <input type="text" id="admin-form-ortu" required class="w-full p-2.5 border rounded-xl">
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-slate-600 mb-1">No. HP Ortu</label>
+                        <input type="text" id="admin-form-ortu-hp" required class="w-full p-2.5 border rounded-xl">
+                    </div>
+                </div>
+
+                <div class="pt-3 flex justify-end gap-2">
+                    <button type="button" onclick="closeModalSiswa()" class="px-4 py-2 bg-slate-100 text-slate-700 font-semibold rounded-xl">Batal</button>
+                    <button type="submit" class="px-4 py-2 bg-teal-600 text-white font-semibold rounded-xl">Simpan Data</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MAIN JAVASCRIPT APP LOGIC -->
+    <script>
+        // PWA MANIFEST DYNAMIC GENERATION
+        (function generateManifest() {
+            const manifestObj = {
+                name: "ADEM SMKN 1 Kragilan Portal",
+                short_name: "ADEM Kragilan",
+                start_url: "./",
+                display: "standalone",
+                background_color: "#0f172a",
+                theme_color: "#0d9488",
+                icons: [
+                    {
+                        src: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=192&h=192&fit=crop",
+                        sizes: "192x192",
+                        type: "image/png"
+                    }
+                ]
+            };
+            const blob = new Blob([JSON.stringify(manifestObj)], { type: 'application/json' });
+            document.getElementById('manifest-placeholder').setAttribute('href', URL.createObjectURL(blob));
+        })();
+
+        // PWA SERVICE WORKER
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                const swCode = `
+                    self.addEventListener('install', (e) => self.skipWaiting());
+                    self.addEventListener('activate', (e) => e.waitUntil(clients.claim()));
+                    self.addEventListener('fetch', (e) => e.respondWith(fetch(e.request).catch(() => caches.match(e.request))));
+                `;
+                const blob = new Blob([swCode], { type: 'text/javascript' });
+                navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
+            });
+        }
+
+        // DEFAULT DATA
+        const DEFAULT_SISWA_LIST = [
+            {
+                id: "1",
+                nama: "Marthin Tabuni",
+                nisn: "0071239821",
+                jurusan: "Teknik Komputer dan Jaringan (TKJ)",
+                ttl: "Jayapura, 12 Mei 2007",
+                jk: "Laki-laki",
+                agama: "Kristen Protestan",
+                asal: "Papua",
+                hp: "081299881122",
+                alamat: "Asrama ADEM SMKN 1 Kragilan, Kab. Serang, Banten",
+                ortu: "Yohanes Tabuni",
+                ortuHp: "082188990011",
+                foto: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=256"
+            },
+            {
+                id: "2",
+                nama: "Noni Rumkorem",
+                nisn: "0074561239",
+                jurusan: "Rekayasa Perangkat Lunak (RPL)",
+                ttl: "Biak, 20 Agustus 2007",
+                jk: "Perempuan",
+                agama: "Kristen Protestan",
+                asal: "Papua Barat",
+                hp: "081377889900",
+                alamat: "Kost Putri Kragilan No. 12, Serang",
+                ortu: "Simon Rumkorem",
+                ortuHp: "081399001122",
+                foto: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=256"
+            }
+        ];
+
+        const DEFAULT_GALERI_LIST = [
+            {
+                id: "g1",
+                judul: "Praktikum Jaringan Komputer",
+                kategori: "Kegiatan Belajar",
+                tanggal: "2026-10-10",
+                url: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=800",
+                keterangan: "Kebersamaan tim siswa ADEM saat merakit jaringan LAN di laboratorium TKJ SMKN 1 Kragilan.",
+                pengunggah: "Marthin Tabuni",
+                likes: 12
+            },
+            {
+                id: "g2",
+                judul: "Makan Bersama di Asrama ADEM",
+                kategori: "Kebersamaan Asrama",
+                tanggal: "2026-09-28",
+                url: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&q=80&w=800",
+                keterangan: "Sesi keakraban malam minggu dan jamuan makan bersama di asrama Kragilan.",
+                pengunggah: "Noni Rumkorem",
+                likes: 19
+            },
+            {
+                id: "g3",
+                judul: "Penyambutan Beasiswa ADEM 2026",
+                kategori: "Acara ADEM",
+                tanggal: "2026-08-15",
+                url: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=800",
+                keterangan: "Foto bersama kepala sekolah dan pembina saat orientasi awal di SMKN 1 Kragilan.",
+                pengunggah: "Admin ADEM",
+                likes: 25
+            }
+        ];
+
+        // GLOBAL APP STATE
+        let currentUser = null;
+        let siswaList = [];
+        let galeriList = [];
+        let selectedCategory = 'Semua';
+        let currentLightboxId = null;
+        let tempBase64Upload = null;
+        let deferredPrompt = null;
+
+        // INITIALIZATION
+        window.onload = function() {
+            detectPlatform();
+            lucide.createIcons();
+            loadLocalStorageData();
+            checkExistingSession();
+            setupPWAInstallPrompt();
+        };
+
+        function detectPlatform() {
+            const ua = navigator.userAgent;
+            let p = "Desktop Web";
+            if (/android/i.test(ua)) p = "Android Phone";
+            else if (/iPad|iPhone|iPod/.test(ua)) p = "iOS / iPhone";
+            else if (/Macintosh/.test(ua)) p = "macOS";
+            else if (/Windows/.test(ua)) p = "Windows PC";
+            
+            const badge = document.getElementById('platform-badge');
+            if (badge) badge.innerText = p;
+        }
+
+        function setupPWAInstallPrompt() {
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                document.getElementById('pwa-toast').classList.remove('hidden');
+            });
+        }
+
+        function installPWA() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then(() => {
+                    deferredPrompt = null;
+                    document.getElementById('pwa-toast').classList.add('hidden');
+                });
+            }
+        }
+
+        function dismissPWA() {
+            document.getElementById('pwa-toast').classList.add('hidden');
+        }
+
+        // STORAGE MANAGEMENT
+        function loadLocalStorageData() {
+            const storedSiswa = localStorage.getItem('adem_siswa_list');
+            if (storedSiswa) {
+                try { siswaList = JSON.parse(storedSiswa); } catch(e) { siswaList = DEFAULT_SISWA_LIST; }
+            } else {
+                siswaList = DEFAULT_SISWA_LIST;
+                saveSiswaListToStorage();
+            }
+
+            const storedGaleri = localStorage.getItem('adem_galeri_list');
+            if (storedGaleri) {
+                try { galeriList = JSON.parse(storedGaleri); } catch(e) { galeriList = DEFAULT_GALERI_LIST; }
+            } else {
+                galeriList = DEFAULT_GALERI_LIST;
+                saveGaleriListToStorage();
+            }
+        }
+
+        function saveSiswaListToStorage() {
+            localStorage.setItem('adem_siswa_list', JSON.stringify(siswaList));
+        }
+
+        function saveGaleriListToStorage() {
+            localStorage.setItem('adem_galeri_list', JSON.stringify(galeriList));
+        }
+
+        function checkExistingSession() {
+            const session = localStorage.getItem('adem_session');
+            if (session) {
+                try {
+                    currentUser = JSON.parse(session);
+                    showDashboard();
+                } catch(e) { logout(); }
+            }
+        }
+
+        // LOGIN TAB
+        function switchLoginTab(role) {
+            document.getElementById('login-role').value = role;
+            const btnS = document.getElementById('tab-siswa-btn');
+            const btnA = document.getElementById('tab-admin-btn');
+
+            if (role === 'siswa') {
+                btnS.className = "flex-1 py-2 text-xs sm:text-sm font-semibold rounded-xl transition-all duration-200 flex items-center justify-center gap-2 bg-white text-teal-700 shadow-sm";
+                btnA.className = "flex-1 py-2 text-xs sm:text-sm font-semibold rounded-xl transition-all duration-200 flex items-center justify-center gap-2 text-slate-500 hover:text-slate-800";
+            } else {
+                btnA.className = "flex-1 py-2 text-xs sm:text-sm font-semibold rounded-xl transition-all duration-200 flex items-center justify-center gap-2 bg-white text-teal-700 shadow-sm";
+                btnS.className = "flex-1 py-2 text-xs sm:text-sm font-semibold rounded-xl transition-all duration-200 flex items-center justify-center gap-2 text-slate-500 hover:text-slate-800";
+            }
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const role = document.getElementById('login-role').value;
+            const user = document.getElementById('login-username').value.trim();
+
+            if (role === 'admin') {
+                currentUser = { role: 'admin', username: user, nama: 'Administrator ADEM' };
+            } else {
+                let found = siswaList.find(s => s.nisn === user || s.nama.toLowerCase().includes(user.toLowerCase()));
+                if (!found) {
+                    found = {
+                        id: Date.now().toString(),
+                        nama: user.charAt(0).toUpperCase() + user.slice(1),
+                        nisn: "00" + Math.floor(10000000 + Math.random() * 90000000),
+                        jurusan: "Teknik Komputer dan Jaringan (TKJ)",
+                        ttl: "Jayapura, 15 Januari 2007",
+                        jk: "Laki-laki",
+                        agama: "Kristen",
+                        asal: "Papua",
+                        hp: "081234567890",
+                        alamat: "Asrama ADEM SMKN 1 Kragilan, Banten",
+                        ortu: "Orang Tua Siswa",
+                        ortuHp: "081987654321",
+                        foto: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=256"
+                    };
+                    siswaList.push(found);
+                    saveSiswaListToStorage();
+                }
+                currentUser = { role: 'siswa', username: user, siswaId: found.id };
+            }
+
+            localStorage.setItem('adem_session', JSON.stringify(currentUser));
+            showDashboard();
+        }
+
+        function logout() {
+            localStorage.removeItem('adem_session');
+            currentUser = null;
+            document.getElementById('login-section').classList.remove('hidden');
+            document.getElementById('desktop-sidebar').classList.add('hidden');
+            document.getElementById('mobile-header').classList.add('hidden');
+            document.getElementById('mobile-bottom-nav').classList.add('hidden');
+            document.getElementById('view-dashboard-container').classList.add('hidden');
+            document.getElementById('view-galeri-container').classList.add('hidden');
+            document.getElementById('view-pengumuman-container').classList.add('hidden');
+            document.getElementById('view-backup-container').classList.add('hidden');
+        }
+
+        function showDashboard() {
+            document.getElementById('login-section').classList.add('hidden');
+            document.getElementById('desktop-sidebar').classList.remove('hidden');
+            document.getElementById('desktop-sidebar').classList.add('md:flex');
+            document.getElementById('mobile-header').classList.remove('hidden');
+            document.getElementById('mobile-bottom-nav').classList.remove('hidden');
+
+            const sName = document.getElementById('sidebar-user-name');
+            const sRole = document.getElementById('sidebar-user-role');
+            const sAvatar = document.getElementById('sidebar-avatar');
+            const mBadge = document.getElementById('mobile-user-badge');
+
+            if (currentUser.role === 'admin') {
+                sName.innerText = "Admin ADEM";
+                sRole.innerText = "ADMIN";
+                sAvatar.innerText = "A";
+                mBadge.innerText = "Admin";
+
+                document.getElementById('admin-dashboard').classList.remove('hidden');
+                document.getElementById('siswa-dashboard').classList.add('hidden');
+                renderAdminTable();
+            } else {
+                const sData = siswaList.find(s => s.id === currentUser.siswaId) || siswaList[0];
+                sName.innerText = sData.nama;
+                sRole.innerText = "SISWA";
+                sAvatar.innerText = sData.nama.charAt(0);
+                mBadge.innerText = sData.nama;
+
+                document.getElementById('siswa-dashboard').classList.remove('hidden');
+                document.getElementById('admin-dashboard').classList.add('hidden');
+                renderSiswaBiodata(sData);
+            }
+
+            switchView('dashboard');
+        }
+
+        function switchView(viewName) {
+            document.getElementById('view-dashboard-container').classList.add('hidden');
+            document.getElementById('view-galeri-container').classList.add('hidden');
+            document.getElementById('view-pengumuman-container').classList.add('hidden');
+            document.getElementById('view-backup-container').classList.add('hidden');
+
+            if (viewName === 'dashboard') document.getElementById('view-dashboard-container').classList.remove('hidden');
+            if (viewName === 'galeri') {
+                document.getElementById('view-galeri-container').classList.remove('hidden');
+                renderGaleriGrid();
+            }
+            if (viewName === 'pengumuman') document.getElementById('view-pengumuman-container').classList.remove('hidden');
+            if (viewName === 'backup') document.getElementById('view-backup-container').classList.remove('hidden');
+
+            ['dashboard', 'galeri', 'pengumuman', 'backup'].forEach(v => {
+                const btnM = document.getElementById(`m-nav-${v}`);
+                if (btnM) {
+                    if (v === viewName) btnM.className = "flex flex-col items-center gap-1 text-teal-600 font-bold";
+                    else btnM.className = "flex flex-col items-center gap-1 text-slate-400";
+                }
+            });
+        }
+
+        // BIODATA & CARD PRINT
+        function renderSiswaBiodata(s) {
+            document.getElementById('siswa-welcome-name').innerText = s.nama;
+            document.getElementById('view-nama').innerText = s.nama;
+            document.getElementById('view-nisn').innerText = s.nisn;
+            document.getElementById('view-jurusan').innerText = s.jurusan;
+            document.getElementById('view-asal').innerText = s.asal;
+            document.getElementById('view-ttl').innerText = s.ttl;
+            document.getElementById('view-jk').innerText = s.jk;
+            document.getElementById('view-agama').innerText = s.agama;
+            document.getElementById('view-hp').innerText = s.hp;
+            document.getElementById('view-alamat').innerText = s.alamat;
+            document.getElementById('view-ortu').innerText = s.ortu;
+            document.getElementById('view-ortu-hp').innerText = s.ortuHp;
+            if (s.foto) document.getElementById('view-foto').src = s.foto;
+
+            // Form Populate
+            document.getElementById('edit-nama').value = s.nama;
+            document.getElementById('edit-nisn').value = s.nisn;
+            document.getElementById('edit-jurusan').value = s.jurusan;
+            document.getElementById('edit-ttl').value = s.ttl;
+            document.getElementById('edit-jk').value = s.jk;
+            document.getElementById('edit-agama').value = s.agama;
+            document.getElementById('edit-asal').value = s.asal;
+            document.getElementById('edit-hp').value = s.hp;
+            document.getElementById('edit-foto').value = s.foto || '';
+            document.getElementById('edit-alamat').value = s.alamat;
+            document.getElementById('edit-ortu').value = s.ortu;
+            document.getElementById('edit-ortu-hp').value = s.ortuHp;
+        }
+
+        function convertProfileFotoFile(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    document.getElementById('edit-foto').value = evt.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function toggleEditBiodata(show) {
+            document.getElementById('biodata-view').classList.toggle('hidden', show);
+            document.getElementById('biodata-edit-form').classList.toggle('hidden', !show);
+            document.getElementById('btn-edit-biodata').classList.toggle('hidden', show);
+        }
+
+        function saveBiodata(e) {
+            e.preventDefault();
+            const idx = siswaList.findIndex(s => s.id === currentUser.siswaId);
+            if (idx === -1) return;
+
+            const updated = {
+                ...siswaList[idx],
+                nama: document.getElementById('edit-nama').value,
+                nisn: document.getElementById('edit-nisn').value,
+                jurusan: document.getElementById('edit-jurusan').value,
+                ttl: document.getElementById('edit-ttl').value,
+                jk: document.getElementById('edit-jk').value,
+                agama: document.getElementById('edit-agama').value,
+                asal: document.getElementById('edit-asal').value,
+                hp: document.getElementById('edit-hp').value,
+                foto: document.getElementById('edit-foto').value || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=256',
+                alamat: document.getElementById('edit-alamat').value,
+                ortu: document.getElementById('edit-ortu').value,
+                ortuHp: document.getElementById('edit-ortu-hp').value,
+            };
+
+            siswaList[idx] = updated;
+            saveSiswaListToStorage();
+            renderSiswaBiodata(updated);
+            toggleEditBiodata(false);
+        }
+
+        function openPrintCardModal() {
+            const s = siswaList.find(item => item.id === currentUser.siswaId) || siswaList[0];
+            document.getElementById('card-nama').innerText = s.nama;
+            document.getElementById('card-nisn').innerText = s.nisn;
+            document.getElementById('card-jurusan').innerText = s.jurusan;
+            document.getElementById('card-asal').innerText = s.asal;
+            document.getElementById('card-foto').src = s.foto;
+            document.getElementById('printable-card-modal').classList.remove('hidden');
+        }
+
+        function closePrintCardModal() {
+            document.getElementById('printable-card-modal').classList.add('hidden');
+        }
+
+        // GALERI FOTO KEBERSAMAAN LOGIC
+        function filterGaleri(cat) {
+            selectedCategory = cat;
+            const categories = ['Semua', 'Kegiatan Belajar', 'Kebersamaan Asrama', 'Acara ADEM', 'Ekstrakurikuler'];
+            categories.forEach(c => {
+                const btn = document.getElementById(`cat-btn-${c}`);
+                if (btn) {
+                    if (c === cat) btn.className = "px-3 py-1.5 rounded-xl font-bold transition bg-teal-600 text-white";
+                    else btn.className = "px-3 py-1.5 rounded-xl font-medium transition bg-slate-100 text-slate-600 hover:bg-slate-200";
+                }
+            });
+            renderGaleriGrid();
+        }
+
+        function renderGaleriGrid() {
+            const grid = document.getElementById('galeri-grid');
+            const search = document.getElementById('search-foto-input').value.toLowerCase();
+            grid.innerHTML = '';
+
+            document.getElementById('stat-foto').innerText = galeriList.length;
+
+            const filtered = galeriList.filter(item => {
+                const matchCat = selectedCategory === 'Semua' || item.kategori === selectedCategory;
+                const matchSearch = item.judul.toLowerCase().includes(search) || item.keterangan.toLowerCase().includes(search);
+                return matchCat && matchSearch;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-12 bg-white rounded-2xl border border-slate-200">
+                        <i data-lucide="image-off" class="w-10 h-10 text-slate-300 mx-auto mb-2"></i>
+                        <p class="text-xs font-semibold text-slate-500">Belum ada foto kebersamaan untuk kategori ini.</p>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            filtered.forEach(f => {
+                const card = document.createElement('div');
+                card.className = "group bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl transition duration-300 flex flex-col justify-between cursor-pointer";
+                card.onclick = () => openLightbox(f.id);
+
+                card.innerHTML = `
+                    <div>
+                        <div class="relative overflow-hidden h-48 bg-slate-100">
+                            <img src="${f.url}" alt="${f.judul}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                            <span class="absolute top-3 left-3 bg-slate-900/80 backdrop-blur-md text-white text-[10px] font-bold px-2.5 py-1 rounded-full border border-white/20">
+                                ${f.kategori}
+                            </span>
+                        </div>
+                        <div class="p-4 space-y-1.5">
+                            <h4 class="font-bold text-slate-800 text-sm group-hover:text-teal-600 transition truncate">${f.judul}</h4>
+                            <p class="text-xs text-slate-500 line-clamp-2 leading-relaxed">${f.keterangan}</p>
+                        </div>
+                    </div>
+                    <div class="px-4 py-3 bg-slate-50 border-t border-slate-100 flex justify-between items-center text-[11px] text-slate-400">
+                        <span class="truncate">Oleh: <strong class="text-slate-600">${f.pengunggah}</strong></span>
+                        <div class="flex items-center gap-1 text-rose-500 font-semibold">
+                            <i data-lucide="heart" class="w-3.5 h-3.5 fill-rose-500"></i>
+                            <span>${f.likes}</span>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        // UPLOAD FOTO MODAL
+        function openUploadFotoModal() {
+            document.getElementById('upload-foto-form').reset();
+            document.getElementById('foto-preview-box').classList.add('hidden');
+            document.getElementById('foto-tanggal').value = new Date().toISOString().slice(0, 10);
+            tempBase64Upload = null;
+            document.getElementById('modal-upload-foto').classList.remove('hidden');
+        }
+
+        function closeUploadFotoModal() {
+            document.getElementById('modal-upload-foto').classList.add('hidden');
+        }
+
+        function previewUploadFoto(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    tempBase64Upload = evt.target.result;
+                    document.getElementById('foto-preview-img').src = tempBase64Upload;
+                    document.getElementById('foto-preview-box').classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function previewUploadFotoUrl() {
+            const url = document.getElementById('foto-url-input').value;
+            if (url) {
+                tempBase64Upload = url;
+                document.getElementById('foto-preview-img').src = url;
+                document.getElementById('foto-preview-box').classList.remove('hidden');
+            }
+        }
+
+        function handleSaveFoto(e) {
+            e.preventDefault();
+            const judul = document.getElementById('foto-judul').value;
+            const kategori = document.getElementById('foto-kategori').value;
+            const tanggal = document.getElementById('foto-tanggal').value;
+            const keterangan = document.getElementById('foto-keterangan').value;
+            const finalUrl = tempBase64Upload || document.getElementById('foto-url-input').value || 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=800';
+
+            let uName = "Pengguna ADEM";
+            if (currentUser) {
+                uName = currentUser.role === 'admin' ? "Admin Sekolah" : (siswaList.find(s => s.id === currentUser.siswaId)?.nama || "Siswa ADEM");
+            }
+
+            const newFoto = {
+                id: "g_" + Date.now(),
+                judul: judul,
+                kategori: kategori,
+                tanggal: tanggal,
+                url: finalUrl,
+                keterangan: keterangan,
+                pengunggah: uName,
+                likes: 1
+            };
+
+            galeriList.unshift(newFoto);
+            saveGaleriListToStorage();
+            renderGaleriGrid();
+            closeUploadFotoModal();
+        }
+
+        // LIGHTBOX
+        function openLightbox(id) {
+            const foto = galeriList.find(f => f.id === id);
+            if (!foto) return;
+
+            currentLightboxId = id;
+            document.getElementById('lightbox-img').src = foto.url;
+            document.getElementById('lightbox-judul').innerText = foto.judul;
+            document.getElementById('lightbox-kategori').innerText = foto.kategori;
+            document.getElementById('lightbox-keterangan').innerText = foto.keterangan || 'Tidak ada keterangan.';
+            document.getElementById('lightbox-pengunggah').innerText = foto.pengunggah;
+            document.getElementById('lightbox-tanggal').innerText = foto.tanggal;
+            document.getElementById('lightbox-likes-count').innerText = foto.likes;
+
+            document.getElementById('modal-lightbox').classList.remove('hidden');
+        }
+
+        function closeLightbox() {
+            document.getElementById('modal-lightbox').classList.add('hidden');
+            currentLightboxId = null;
+        }
+
+        function toggleLikeFoto() {
+            if (!currentLightboxId) return;
+            const idx = galeriList.findIndex(f => f.id === currentLightboxId);
+            if (idx !== -1) {
+                galeriList[idx].likes += 1;
+                saveGaleriListToStorage();
+                document.getElementById('lightbox-likes-count').innerText = galeriList[idx].likes;
+                renderGaleriGrid();
+            }
+        }
+
+        function deleteCurrentFoto() {
+            if (!currentLightboxId) return;
+            galeriList = galeriList.filter(f => f.id !== currentLightboxId);
+            saveGaleriListToStorage();
+            closeLightbox();
+            renderGaleriGrid();
+        }
+
+        // ADMIN FUNCTIONS
+        function renderAdminTable() {
+            const tbody = document.getElementById('admin-siswa-table-body');
+            const search = document.getElementById('search-input').value.toLowerCase();
+            const filter = document.getElementById('filter-jurusan').value.toLowerCase();
+
+            tbody.innerHTML = '';
+            const filtered = siswaList.filter(s => {
+                const matchS = s.nama.toLowerCase().includes(search) || s.nisn.includes(search);
+                const matchJ = filter === '' || s.jurusan.toLowerCase().includes(filter);
+                return matchS && matchJ;
+            });
+
+            document.getElementById('stat-total').innerText = siswaList.length;
+            document.getElementById('stat-teknik').innerText = siswaList.filter(s => s.jurusan.includes('RPL') || s.jurusan.includes('TKJ') || s.jurusan.includes('TKR') || s.jurusan.includes('TPMI')).length;
+
+            filtered.forEach(s => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 border-b border-slate-100";
+                tr.innerHTML = `
+                    <td class="py-3 px-4 font-semibold text-slate-800">
+                        <div class="flex items-center gap-2">
+                            <img src="${s.foto}" class="w-7 h-7 rounded-full object-cover">
+                            <span>${s.nama}</span>
+                        </div>
+                    </td>
+                    <td class="py-3 px-4 font-mono text-slate-600">${s.nisn}</td>
+                    <td class="py-3 px-4"><span class="px-2 py-0.5 bg-slate-100 rounded text-xs">${s.jurusan}</span></td>
+                    <td class="py-3 px-4">${s.asal}</td>
+                    <td class="py-3 px-4">${s.hp}</td>
+                    <td class="py-3 px-4 text-center">
+                        <div class="flex justify-center gap-1">
+                            <button onclick="editSiswaAdmin('${s.id}')" class="p-1.5 bg-sky-50 text-sky-600 rounded-lg"><i data-lucide="edit" class="w-3.5 h-3.5"></i></button>
+                            <button onclick="deleteSiswaAdmin('${s.id}')" class="p-1.5 bg-rose-50 text-rose-600 rounded-lg"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            lucide.createIcons();
+        }
+
+        function openModalAddSiswa() {
+            document.getElementById('modal-title').innerText = "Tambah Siswa ADEM";
+            document.getElementById('admin-siswa-form').reset();
+            document.getElementById('admin-edit-id').value = '';
+            document.getElementById('modal-siswa').classList.remove('hidden');
+        }
+
+        function closeModalSiswa() {
+            document.getElementById('modal-siswa').classList.add('hidden');
+        }
+
+        function editSiswaAdmin(id) {
+            const s = siswaList.find(item => item.id === id);
+            if (!s) return;
+            document.getElementById('modal-title').innerText = "Edit Data Siswa";
+            document.getElementById('admin-edit-id').value = s.id;
+            document.getElementById('admin-form-nama').value = s.nama;
+            document.getElementById('admin-form-nisn').value = s.nisn;
+            document.getElementById('admin-form-jurusan').value = s.jurusan;
+            document.getElementById('admin-form-ttl').value = s.ttl;
+            document.getElementById('admin-form-jk').value = s.jk;
+            document.getElementById('admin-form-asal').value = s.asal;
+            document.getElementById('admin-form-hp').value = s.hp;
+            document.getElementById('admin-form-ortu').value = s.ortu;
+            document.getElementById('admin-form-ortu-hp').value = s.ortuHp;
+            document.getElementById('modal-siswa').classList.remove('hidden');
+        }
+
+        function saveAdminSiswa(e) {
+            e.preventDefault();
+            const editId = document.getElementById('admin-edit-id').value;
+            const data = {
+                id: editId || Date.now().toString(),
+                nama: document.getElementById('admin-form-nama').value,
+                nisn: document.getElementById('admin-form-nisn').value,
+                jurusan: document.getElementById('admin-form-jurusan').value,
+                ttl: document.getElementById('admin-form-ttl').value,
+                jk: document.getElementById('admin-form-jk').value,
+                agama: "Kristen",
+                asal: document.getElementById('admin-form-asal').value,
+                hp: document.getElementById('admin-form-hp').value,
+                alamat: "Asrama ADEM SMKN 1 Kragilan",
+                ortu: document.getElementById('admin-form-ortu').value,
+                ortuHp: document.getElementById('admin-form-ortu-hp').value,
+                foto: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=256"
+            };
+
+            if (editId) {
+                const idx = siswaList.findIndex(s => s.id === editId);
+                if (idx !== -1) siswaList[idx] = { ...siswaList[idx], ...data };
+            } else {
+                siswaList.push(data);
+            }
+
+            saveSiswaListToStorage();
+            renderAdminTable();
+            closeModalSiswa();
+        }
+
+        function deleteSiswaAdmin(id) {
+            siswaList = siswaList.filter(s => s.id !== id);
+            saveSiswaListToStorage();
+            renderAdminTable();
+        }
+
+        // EXPORT / IMPOR ALL DATA INCLUDING GALLERY
+        function exportDataJSON() {
+            const fullBackup = {
+                siswa: siswaList,
+                galeri: galeriList
+            };
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(fullBackup, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `ADEM_SMKN1_Kragilan_Full_Backup_${new Date().toISOString().slice(0,10)}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+
+        function importDataJSON(e) {
+            const fileReader = new FileReader();
+            fileReader.onload = function (event) {
+                try {
+                    const imported = JSON.parse(event.target.result);
+                    if (imported.siswa && imported.galeri) {
+                        siswaList = imported.siswa;
+                        galeriList = imported.galeri;
+                    } else if (Array.isArray(imported)) {
+                        siswaList = imported;
+                    }
+                    saveSiswaListToStorage();
+                    saveGaleriListToStorage();
+                    renderAdminTable();
+                    renderGaleriGrid();
+                    alert('Data siswa & galeri foto berhasil diimpor!');
+                } catch(err) {
+                    alert('Format file JSON tidak valid.');
+                }
+            };
+            fileReader.readAsText(e.target.files[0]);
+        }
+    </script>
+</body>
+</html>
